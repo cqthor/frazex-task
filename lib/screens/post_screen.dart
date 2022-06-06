@@ -13,59 +13,19 @@ class PostsScreen extends StatefulWidget {
 }
 
 class _PostsScreenState extends State<PostsScreen> {
-  List<Posts> posts = [];
+  List<Posts>? posts;
   String query = '';
   @override
   void initState() {
     super.initState();
     final post = Provider.of<PostClass>(context, listen: false);
     post.getPostData();
+    init();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final post = Provider.of<PostClass>(context);
-    return Column(
-      children: [
-        SearchWidget(
-          text: query,
-          hintText:
-              AppLocalizations.of(context)?.posthinttext ?? "Title, post or id",
-          onChanged: searchUser,
-        ),
-        Expanded(
-          child: post.loading
-              ? const Center(child: CircularProgressIndicator())
-              : posts.isEmpty
-                  ? ListView.builder(
-                      itemCount: post.posts!.length,
-                      itemBuilder: (context, index) {
-                        final user = post.posts![index];
-                        return Card(
-                          child: ListTile(
-                            leading: Text('${user.id!}'),
-                            title: Text(user.title!),
-                            subtitle: Text(user.body!),
-                          ),
-                        );
-                      },
-                    )
-                  : ListView.builder(
-                      itemCount: posts.length,
-                      itemBuilder: (context, index) {
-                        final user = posts[index];
-                        return Card( 
-                          child: ListTile(
-                            leading: Text('${user.id!}'),
-                            title: Text(user.title!),
-                            subtitle: Text(user.body!),
-                          ),
-                        );
-                      },
-                    ),
-        ),
-      ],
-    );
+  void init() async {
+    final post = Provider.of<PostClass>(context, listen: false);
+    posts = post.posts;
   }
 
   // search function
@@ -83,5 +43,39 @@ class _PostsScreenState extends State<PostsScreen> {
     setState(() {
       posts = suggestions;
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final post = Provider.of<PostClass>(context);
+    return Column(
+      children: [
+        SearchWidget(
+          text: query,
+          hintText:
+              AppLocalizations.of(context)?.posthinttext ?? "Title, post or id",
+          onChanged: searchUser,
+        ),
+        Expanded(
+          child: post.loading
+              ? const Center(child: CircularProgressIndicator())
+              : ListView.builder(
+                  itemCount: posts?.length ?? post.posts!.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      child: ListTile(
+                        leading: Text(posts?[index].id!.toString() ??
+                            post.posts![index].id.toString()),
+                        title: Text(posts?[index].title! ??
+                            post.posts![index].title.toString()),
+                        subtitle: Text(posts?[index].body! ??
+                            "${post.posts![index].body}"),
+                      ),
+                    );
+                  },
+                ),
+        ),
+      ],
+    );
   }
 }

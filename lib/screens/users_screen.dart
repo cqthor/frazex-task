@@ -13,7 +13,7 @@ class UsersScreen extends StatefulWidget {
 }
 
 class _UsersScreenState extends State<UsersScreen> {
-  List<Users> users = [];
+  List<Users>? users;
   String query = '';
 
   @override
@@ -21,13 +21,30 @@ class _UsersScreenState extends State<UsersScreen> {
     super.initState();
     final post = Provider.of<DataClass>(context, listen: false);
     post.getPostData();
-   
+
     init();
   }
 
   void init() async {
     final post = Provider.of<DataClass>(context, listen: false);
-    users = post.users ?? [];
+    users = post.users;
+  }
+
+  // search function
+  void searchUser(String query) {
+    final post = Provider.of<DataClass>(context, listen: false);
+    final suggestions = post.users!.where((user) {
+      final titleLower = user.name!.toLowerCase();
+      final usernameLower = user.username!.toLowerCase();
+      final searchLower = query.toLowerCase();
+      final id = user.id.toString();
+      return titleLower.contains(searchLower) ||
+          usernameLower.contains(searchLower) ||
+          id.contains(searchLower);
+    }).toList();
+    setState(() {
+      users = suggestions;
+    });
   }
 
   @override
@@ -46,14 +63,18 @@ class _UsersScreenState extends State<UsersScreen> {
           child: post.loading
               ? const Center(child: CircularProgressIndicator())
               : ListView.builder(
-                  itemCount: users.length,
+                  itemCount: users?.length ?? post.users!.length,
                   itemBuilder: (context, index) {
-                    final user = users[index];
                     return Card(
                       child: ListTile(
-                        leading: Text('${user.id!}'),
-                        title: Text(user.name!),
-                        subtitle: Text(user.username!),
+                        leading: Text(users?[index].id!.toString() ??
+                            post.users![index].id.toString()),
+                        title: Text(users?[index].name! ??
+                            post.users![index].name.toString()),
+                        subtitle: Text(
+                          users?[index].username! ??
+                              "${post.users![index].username}",
+                        ),
                       ),
                     );
                   },
@@ -61,22 +82,5 @@ class _UsersScreenState extends State<UsersScreen> {
         ),
       ],
     );
-  }
-
-  // search function
-  void searchUser(String query) {
-    final post = Provider.of<DataClass>(context, listen: false);
-    final suggestions = post.users!.where((user) {
-      final titleLower = user.name!.toLowerCase();
-      final usernameLower = user.username!.toLowerCase();
-      final searchLower = query.toLowerCase();
-      final id = user.id.toString();
-      return titleLower.contains(searchLower) ||
-          usernameLower.contains(searchLower) ||
-          id.contains(searchLower);
-    }).toList();
-    setState(() {
-      users = suggestions;
-    });
   }
 }
