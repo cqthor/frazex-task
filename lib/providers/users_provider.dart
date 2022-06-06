@@ -15,13 +15,4 @@ class DataClass extends ChangeNotifier {
 
     notifyListeners();
   }
-
-  // getSearchedPostData(query) async {
-  //   searchLoading = true;
-  //   searchedUsers = await getSearchedUsersdata(query);
-
-  //   searchLoading = false;
-
-  //   notifyListeners();
-  // }
 }

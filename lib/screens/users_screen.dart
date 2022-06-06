@@ -21,6 +21,13 @@ class _UsersScreenState extends State<UsersScreen> {
     super.initState();
     final post = Provider.of<DataClass>(context, listen: false);
     post.getPostData();
+   
+    init();
+  }
+
+  void init() async {
+    final post = Provider.of<DataClass>(context, listen: false);
+    users = post.users ?? [];
   }
 
   @override
@@ -38,31 +45,19 @@ class _UsersScreenState extends State<UsersScreen> {
         Expanded(
           child: post.loading
               ? const Center(child: CircularProgressIndicator())
-              : users.isEmpty
-                  ? ListView.builder(
-                      itemCount: post.users!.length,
-                      itemBuilder: (context, index) {
-                        final user = post.users![index];
-                        return ListTile(
-                          leading: Text('${user.id!}'),
-                          title: Text(user.name!),
-                          subtitle: Text(user.username!),
-                        );
-                      },
-                    )
-                  : ListView.builder(
-                      itemCount: users.length,
-                      itemBuilder: (context, index) {
-                        final user = users[index];
-                        return Card(
-                          child: ListTile(
-                            leading: Text('${user.id!}'),
-                            title: Text(user.name!),
-                            subtitle: Text(user.username!),
-                          ),
-                        );
-                      },
-                    ),
+              : ListView.builder(
+                  itemCount: users.length,
+                  itemBuilder: (context, index) {
+                    final user = users[index];
+                    return Card(
+                      child: ListTile(
+                        leading: Text('${user.id!}'),
+                        title: Text(user.name!),
+                        subtitle: Text(user.username!),
+                      ),
+                    );
+                  },
+                ),
         ),
       ],
     );
