@@ -1,6 +1,3 @@
-// ignore: unused_import
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:frazex_task/models/users_model.dart';
 import 'package:frazex_task/providers/users_provider.dart';
