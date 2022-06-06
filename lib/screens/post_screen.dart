@@ -3,6 +3,7 @@ import 'package:frazex_task/models/posts_models.dart';
 import 'package:frazex_task/providers/post_provider.dart';
 import 'package:frazex_task/widgets/search_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PostsScreen extends StatefulWidget {
   const PostsScreen({Key? key}) : super(key: key);
@@ -26,7 +27,12 @@ class _PostsScreenState extends State<PostsScreen> {
     final post = Provider.of<PostClass>(context);
     return Column(
       children: [
-        buildSearch(),
+        SearchWidget(
+          text: query,
+          hintText:
+              AppLocalizations.of(context)?.posthinttext ?? "Title, post or id",
+          onChanged: searchUser,
+        ),
         Expanded(
           child: post.loading
               ? const Center(child: CircularProgressIndicator())
@@ -35,10 +41,12 @@ class _PostsScreenState extends State<PostsScreen> {
                       itemCount: post.posts!.length,
                       itemBuilder: (context, index) {
                         final user = post.posts![index];
-                        return ListTile(
-                          leading: Text('${user.id!}'),
-                          title: Text(user.title!),
-                          subtitle: Text(user.body!),
+                        return Card(
+                          child: ListTile(
+                            leading: Text('${user.id!}'),
+                            title: Text(user.title!),
+                            subtitle: Text(user.body!),
+                          ),
                         );
                       },
                     )
@@ -46,10 +54,12 @@ class _PostsScreenState extends State<PostsScreen> {
                       itemCount: posts.length,
                       itemBuilder: (context, index) {
                         final user = posts[index];
-                        return ListTile(
-                          leading: Text('${user.id!}'),
-                          title: Text(user.title!),
-                          subtitle: Text(user.body!),
+                        return Card( 
+                          child: ListTile(
+                            leading: Text('${user.id!}'),
+                            title: Text(user.title!),
+                            subtitle: Text(user.body!),
+                          ),
                         );
                       },
                     ),
@@ -58,12 +68,7 @@ class _PostsScreenState extends State<PostsScreen> {
     );
   }
 
-  Widget buildSearch() => SearchWidget(
-        text: query,
-        hintText: 'Title, id or post',
-        onChanged: searchUser,
-      );
-
+  // search function
   void searchUser(String query) {
     final post = Provider.of<PostClass>(context, listen: false);
     final suggestions = post.posts!.where((user) {

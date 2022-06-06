@@ -1,0 +1,10 @@
+{
+    "helloWorld": "Hello World!",
+    "@helloWorld": {
+      "description": "The conventional newborn programmer greeting"
+    },    
+    "posts" : "Posts",
+    "users": "Users",
+    "userhinttext" : "Title, username or id",
+    "posthinttext" : "Title, post or id"
+}

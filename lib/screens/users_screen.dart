@@ -6,6 +6,7 @@ import 'package:frazex_task/models/users_model.dart';
 import 'package:frazex_task/providers/users_provider.dart';
 import 'package:frazex_task/widgets/search_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UsersScreen extends StatefulWidget {
   const UsersScreen({Key? key}) : super(key: key);
@@ -31,7 +32,12 @@ class _UsersScreenState extends State<UsersScreen> {
 
     return Column(
       children: [
-        buildSearch(),
+        SearchWidget(
+          text: query,
+          hintText: AppLocalizations.of(context)?.userhinttext ??
+              "Title, username or id",
+          onChanged: searchUser,
+        ),
         Expanded(
           child: post.loading
               ? const Center(child: CircularProgressIndicator())
@@ -51,10 +57,12 @@ class _UsersScreenState extends State<UsersScreen> {
                       itemCount: users.length,
                       itemBuilder: (context, index) {
                         final user = users[index];
-                        return ListTile(
-                          leading: Text('${user.id!}'),
-                          title: Text(user.name!),
-                          subtitle: Text(user.username!),
+                        return Card(
+                          child: ListTile(
+                            leading: Text('${user.id!}'),
+                            title: Text(user.name!),
+                            subtitle: Text(user.username!),
+                          ),
                         );
                       },
                     ),
@@ -63,12 +71,7 @@ class _UsersScreenState extends State<UsersScreen> {
     );
   }
 
-  Widget buildSearch() => SearchWidget(
-        text: query,
-        hintText: 'Title or Author Name',
-        onChanged: searchUser,
-      );
-
+  // search function
   void searchUser(String query) {
     final post = Provider.of<DataClass>(context, listen: false);
     final suggestions = post.users!.where((user) {
