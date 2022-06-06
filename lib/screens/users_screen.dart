@@ -1,9 +1,9 @@
+// ignore: unused_import
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:frazex_task/models/users_model.dart';
 import 'package:frazex_task/providers/users_provider.dart';
-import 'package:frazex_task/services/users_services.dart';
 import 'package:frazex_task/widgets/search_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -17,52 +17,67 @@ class UsersScreen extends StatefulWidget {
 class _UsersScreenState extends State<UsersScreen> {
   List<Users> users = [];
   String query = '';
-  Timer? debouncer;
+  // Timer? debouncer;
   @override
   void initState() {
     super.initState();
     final post = Provider.of<DataClass>(context, listen: false);
-    // post.getPostData();
-    post.getSearchedPostData(query);
+    post.getPostData();
+    // init();
+    // post.getSearchedPostData(query);
   }
 
-  @override
-  void dispose() {
-    debouncer?.cancel();
-    super.dispose();
-  }
+  // init() {
+  //   final post = Provider.of<DataClass>(context, listen: false);
+  //   setState(() {
+  //     users = post.users!;
+  //   });
+  // }
 
-  void debounce(
-    VoidCallback callback, {
-    Duration duration = const Duration(milliseconds: 1000),
-  }) {
-    if (debouncer != null) {
-      debouncer!.cancel();
-    }
+  // void debounce(
+  //   VoidCallback callback, {
+  //   Duration duration = const Duration(milliseconds: 1000),
+  // }) {
+  //   if (debouncer != null) {
+  //     debouncer!.cancel();
+  //   }
 
-    debouncer = Timer(duration, callback);
-  }
+  //   debouncer = Timer(duration, callback);
+  // }
 
   @override
   Widget build(BuildContext context) {
     final post = Provider.of<DataClass>(context);
+
     return Column(
       children: [
         buildSearch(),
         Expanded(
           child: post.loading
               ? const Center(child: CircularProgressIndicator())
-              : ListView.builder(
-                  itemCount: users.length,
-                  itemBuilder: (context, index) {
-                    final user = users[index];
-                    return ListTile(
-                      leading: Text('${user.id!}'),
-                      title: Text(user.name!),
-                      subtitle: Text(user.username!),
-                    );
-                  },
-                ),
+              : users.isEmpty
+                  ? ListView.builder(
+                      itemCount: post.users!.length,
+                      itemBuilder: (context, index) {
+                        final user = post.users![index];
+                        return ListTile(
+                          leading: Text('${user.id!}'),
+                          title: Text(user.name!),
+                          subtitle: Text(user.username!),
+                        );
+                      },
+                    )
+                  : ListView.builder(
+                      itemCount: users.length,
+                      itemBuilder: (context, index) {
+                        final user = users[index];
+                        return ListTile(
+                          leading: Text('${user.id!}'),
+                          title: Text(user.name!),
+                          subtitle: Text(user.username!),
+                        );
+                      },
+                    ),
         ),
       ],
     );
@@ -73,25 +88,46 @@ class _UsersScreenState extends State<UsersScreen> {
         hintText: 'Title or Author Name',
         onChanged: searchUser,
       );
-  Future searchUser(String query) async => debounce(() async {
-        @override
-        // ignore: unused_element
-        void initState() {
-          super.initState();
-          final post = Provider.of<DataClass>(context, listen: false);
-          // post.getPostData();
-          post.getSearchedPostData(query);
-        }
 
-        final post = Provider.of<DataClass>(context);
-        final users = await post.getSearchedPostData(query);
-        // final users = await getSearchedUsersdata(query);
+  void searchUser(String query) {
+    final post = Provider.of<DataClass>(context, listen: false);
+    final suggestions = post.users!.where((user) {
+      final titleLower = user.name!.toLowerCase();
+      final usernameLower = user.username!.toLowerCase();
+      final searchLower = query.toLowerCase();
+      final id = user.id.toString();
+      return titleLower.contains(searchLower) ||
+          usernameLower.contains(searchLower) ||
+          id.contains(searchLower);
+    }).toList();
+    setState(() {
+      users = suggestions;
+    });
+  }
 
-        if (!mounted) return;
+  // Future searchUser(String query) async => debounce(
+  //       () async {
+  //         // @override
+  //         // // ignore: unused_element
+  //         // void initState() {
+  //         //   super.initState();
+  //         //   final post = Provider.of<DataClass>(context, listen: false);
+  //         //   // post.getPostData();
+  //         //   post.getSearchedPostData(query);
+  //         // }
 
-        setState(() {
-          this.query = query;
-          this.users = users;
-        });
-      });
+  //         final post = Provider.of<DataClass>(context, listen: false);
+  //         final users = await post.getSearchedPostData(query);
+  //         // final users = await getSearchedUsersdata(query);
+
+  //         if (!mounted) return;
+
+  //         setState(
+  //           () {
+  //             this.query = query;
+  //             this.users = users;
+  //           },
+  //         );
+  //       },
+  //     );
 }

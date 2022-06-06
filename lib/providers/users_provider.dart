@@ -3,25 +3,25 @@ import 'package:frazex_task/models/users_model.dart';
 import 'package:frazex_task/services/users_services.dart';
 
 class DataClass extends ChangeNotifier {
-  late List<Users> users;
-  List<Users>? searchedUsers;
+  List<Users>? users;
+  // List<Users>? searchedUsers;
   bool loading = false;
-
-  // getPostData() async {
-  //   loading = true;
-  //   users = await getUsersdata();
-
-  //   loading = false;
-
-  //   notifyListeners();
-  // }
-
-  getSearchedPostData(query) async {
+  // bool searchLoading = false;
+  getPostData() async {
     loading = true;
-    searchedUsers = await getSearchedUsersdata(query);
+    users = await getUsersdata();
 
     loading = false;
 
     notifyListeners();
   }
+
+  // getSearchedPostData(query) async {
+  //   searchLoading = true;
+  //   searchedUsers = await getSearchedUsersdata(query);
+
+  //   searchLoading = false;
+
+  //   notifyListeners();
+  // }
 }
