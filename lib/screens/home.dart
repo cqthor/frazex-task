@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frazex_task/screens/post_screen.dart';
 import 'package:frazex_task/screens/users_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -11,7 +12,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   static const List<Widget> _pages = [
     UsersScreen(),
-    Text('Posts'),
+    PostsScreen(),
   ];
   static const List<String> _titles = [
     'Users',

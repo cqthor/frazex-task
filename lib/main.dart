@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frazex_task/providers/post_provider.dart';
 import 'package:frazex_task/screens/home.dart';
 import 'package:provider/provider.dart';
 
@@ -8,6 +9,9 @@ void main() {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(
       create: (context) => DataClass(),
+    ),
+    ChangeNotifierProvider(
+      create: (context) => PostClass(),
     )
   ], child: const MyApp()));
 }
