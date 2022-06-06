@@ -3,5 +3,6 @@
     "users": "İstifadəçilər",
     "posts" : "Postlar",
     "userhinttext" : "Başlıq, istifadəçi adı və ya id",
-    "posthinttext" : "Başlıq, post və ya id"
+    "posthinttext" : "Başlıq, post və ya id",
+    "changelang" : "Dili ingiliscə et"
 }

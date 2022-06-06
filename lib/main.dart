@@ -12,7 +12,6 @@ void main() {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => DataClass()),
     ChangeNotifierProvider(create: (context) => PostClass()),
-    ChangeNotifierProvider(create: (context) => LocaleProvider())
   ], child: const MyApp()));
 }
 
@@ -22,19 +21,26 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ], 
-     supportedLocales: L10n.support,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const HomeScreen(),
-    );
+    return ChangeNotifierProvider(
+        create: (context) => LocaleProvider(),
+        builder: (context, child) {
+          return Consumer<LocaleProvider>(builder: (context, provider, child) {
+            return MaterialApp(
+              title: 'Flutter Demo',
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              locale: provider.locale,
+              supportedLocales: L10n.support,
+              theme: ThemeData(
+                primarySwatch: Colors.blue,
+              ),
+              home: const HomeScreen(),
+            );
+          });
+        });
   }
 }

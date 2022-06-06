@@ -6,5 +6,6 @@
     "posts" : "Posts",
     "users": "Users",
     "userhinttext" : "Title, username or id",
-    "posthinttext" : "Title, post or id"
+    "posthinttext" : "Title, post or id",
+    "changelang" : "Change language to AZ"
 }

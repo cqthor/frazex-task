@@ -40,15 +40,27 @@ class _HomeScreenState extends State<HomeScreen> {
           child: SafeArea(
               child: Padding(
         padding: const EdgeInsets.all(10.0),
-        child: Row(
-          children: [
-            // const Text("Change Language"),
-            ElevatedButton(
-                onPressed: () {
-                  context.read<LocaleProvider>().setLocale(const Locale("az"));
-                },
-                child: const Text("Change language "))
-          ],
+        child: Center(
+          child:
+              //  2 dil istifadə edirəm deyə bu şəkildə yazdım qısa olsun deyə
+              // yoxsa DropdownButton işlədərdim
+              ElevatedButton(
+                  onPressed: () {
+                    if (context.read<LocaleProvider>().locale ==
+                        const Locale("az")) {
+                      context
+                          .read<LocaleProvider>()
+                          .setLocale(const Locale("en"));
+                    } else {
+                      context
+                          .read<LocaleProvider>()
+                          .setLocale(const Locale("az"));
+                    }
+                  },
+                  child: Text(
+                    AppLocalizations.of(context)?.changelang ??
+                        "Change Language",
+                  )),
         ),
       ))),
       bottomNavigationBar: BottomNavigationBar(
